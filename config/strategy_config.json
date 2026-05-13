@@ -1,0 +1,28 @@
+{
+  "symbols": [
+    "EURUSDm",
+    "GBPUSDm",
+    "USDCHFm",
+    "AUDUSDm",
+    "XAUUSDm",
+    "US500m"
+  ],
+  "timeframe": "M1",
+  "magic_number": 10032025,
+  "volume": 0.01,
+  "bb_period": 10,
+  "bb_std": 1.8,
+  "rsi_period": 8,
+  "adx_period": 10,
+  "adx_threshold": 18,
+  "atr_period": 8,
+  "risk_reward": 0.9,
+  "volume_map": {
+    "EURUSDm": 0.05,
+    "GBPUSDm": 0.04,
+    "USDCHFm": 0.05,
+    "AUDUSDm": 0.04,
+    "XAUUSDm": 0.02,
+    "US500m": 0.03
+  }
+}
