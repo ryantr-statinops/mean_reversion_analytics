@@ -8,7 +8,7 @@ A professional algorithmic trading bot designed for the **MetaTrader 5 (MT5)** p
 
 ---
 
-## 📈 Strategy Overview
+## Strategy Overview
 
 The bot identifies overextended price movements and trades the return to the mean. It uses a combination of volatility, momentum, and trend strength filters.
 
@@ -29,7 +29,7 @@ The bot identifies overextended price movements and trades the return to the mea
 
 ---
 
-## 🛠 Project Structure
+## Project Structure
 
 ```text
 mean_reversion_eurusd_bot/
@@ -50,7 +50,7 @@ mean_reversion_eurusd_bot/
 
 ---
 
-## 🚀 Installation & Setup
+## Installation & Setup
 
 ### 1. Prerequisites
 - **Windows OS** (Required for MetaTrader 5 Python API).
@@ -74,7 +74,7 @@ pip install -r requirements.txt
 
 ---
 
-## 📖 Usage
+## Usage
 
 ### Test Connection
 Before running the bot, verify the connection to MT5:
@@ -96,7 +96,7 @@ python scripts/export_history.py
 
 ---
 
-## ⚙️ Configuration
+## Configuration
 
 Modify `config/strategy_config.json` to adjust the bot's behavior:
 
@@ -114,7 +114,7 @@ Modify `config/strategy_config.json` to adjust the bot's behavior:
 
 ---
 
-## ⚠️ Disclaimer
+## Disclaimer
 
 **Trading financial instruments involves significant risk.** This bot is for educational and research purposes only. Past performance does not guarantee future results. Use at your own risk. The developer is not responsible for any financial losses incurred.
 
