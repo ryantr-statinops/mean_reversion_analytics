@@ -39,16 +39,16 @@ SYMBOLS = []
 for sym in config["symbols"]:
     if mt5.symbol_select(sym, True):
         SYMBOLS.append(sym)
-        print(f"✅ Đã chọn {sym}")
+        print(f"Đã chọn {sym}")
     else:
-        print(f"❌ Không thể chọn {sym}")
+        print(f"Không thể chọn {sym}")
 
 if not SYMBOLS:
-    print("⚠️ Không có cặp nào hợp lệ.")
+    print("Không có cặp nào hợp lệ.")
     quit()
 
-print("🚀 Bot Mean Reversion (6 cặp) đã chạy...")
-print("⏰ Cập nhật mỗi 15 giây | Chỉ trade 13:00–17:00 (GMT+7) | Algo Trading phải được BẬT")
+print("Bot Mean Reversion (6 cặp) đã chạy...")
+print("Cập nhật mỗi 15 giây | Chỉ trade 13:00–17:00 (GMT+7) | Algo Trading phải được BẬT")
 
 try:
     while True:
@@ -143,13 +143,13 @@ try:
             LAST_TRADE_TIME[SYMBOL] = now
 
             if result.retcode == mt5.TRADE_RETCODE_DONE:
-                print(f"\n✅ [{now.strftime('%Y-%m-%d %H:%M:%S')}] LỆNH KHỚP: {signal.upper()} {SYMBOL} @ {price:.5f}")
+                print(f"\n[{now.strftime('%Y-%m-%d %H:%M:%S')}] LỆNH KHỚP: {signal.upper()} {SYMBOL} @ {price:.5f}")
             else:
-                print(f"\n⚠️ [{now.strftime('%Y-%m-%d %H:%M:%S')}] LỆNH GỬI NHƯNG CHƯA KHỚP ({result.retcode}): {SYMBOL}")
+                print(f"\n[{now.strftime('%Y-%m-%d %H:%M:%S')}] LỆNH GỬI NHƯNG CHƯA KHỚP ({result.retcode}): {SYMBOL}")
 
         time.sleep(15)
 
 except KeyboardInterrupt:
-    print("\n🛑 Bot đã dừng.")
+    print("\nBot đã dừng.")
 finally:
     mt5.shutdown()
