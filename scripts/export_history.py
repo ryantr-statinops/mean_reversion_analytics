@@ -23,8 +23,8 @@ output_path.parent.mkdir(parents=True, exist_ok=True)
 
 if not df.empty:
     df.to_csv(output_path, index=False)
-    print(f"Đã lưu {len(df)} lệnh vào {output_path}")
+    print(f"Saved {len(df)} deals to {output_path}")
 else:
-    print("Không có lệnh nào được tìm thấy.")
+    print("No deals found.")
 
 mt5.shutdown()
