@@ -1,9 +1,9 @@
 import MetaTrader5 as mt5
 
 if mt5.initialize():
-    print("Kết nối MT5 thành công!")
+    print("MT5 connection OK!")
     info = mt5.account_info()
-    print(f"ID tài khoản: {info.login}")
+    print(f"Account ID: {info.login}")
     mt5.shutdown()
 else:
-    print("Lỗi kết nối MT5:", mt5.last_error())
+    print("MT5 connection error:", mt5.last_error())
