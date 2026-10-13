@@ -155,8 +155,9 @@ cython_debug/
 .vscode/
 
 # Project Specific
-data/*.csv
-data/*.json
+data/**/*.csv
+data/**/*.json
 !data/README.md
+!data/results/.gitkeep
 logs/
 *.log

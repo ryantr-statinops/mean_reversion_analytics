@@ -1,10 +1,13 @@
 import json
+import os
+from pathlib import Path
 import pandas as pd
 from datetime import datetime, timedelta
 import MetaTrader5 as mt5
 from src.mt5_connector import initialize_mt5, get_history
 
-with open("config/strategy_config.json") as f:
+BASE_DIR = Path(__file__).resolve().parent.parent
+with open(BASE_DIR / "config" / "strategy_config.json") as f:
     config = json.load(f)
 
 if not initialize_mt5():
@@ -15,9 +18,12 @@ to_date = datetime.now()
 
 df = get_history(config["magic_number"], from_date, to_date)
 
+output_path = BASE_DIR / "data" / "results" / "trades.csv"
+output_path.parent.mkdir(parents=True, exist_ok=True)
+
 if not df.empty:
-    df.to_csv("data/results/trades_eurusd.csv", index=False)
-    print(f"Đã lưu {len(df)} lệnh vào data/results/trades_eurusd.csv")
+    df.to_csv(output_path, index=False)
+    print(f"Đã lưu {len(df)} lệnh vào {output_path}")
 else:
     print("Không có lệnh nào được tìm thấy.")
 
