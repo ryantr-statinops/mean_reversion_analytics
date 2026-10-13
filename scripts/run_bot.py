@@ -11,7 +11,7 @@ import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-# Cooldown tracker (60 giây mỗi cặp)
+# Cooldown tracker (60 seconds per symbol)
 LAST_TRADE_TIME = {}
 
 # Mapping timeframe
@@ -39,23 +39,23 @@ SYMBOLS = []
 for sym in config["symbols"]:
     if mt5.symbol_select(sym, True):
         SYMBOLS.append(sym)
-        print(f"Đã chọn {sym}")
+        print(f"Selected {sym}")
     else:
-        print(f"Không thể chọn {sym}")
+        print(f"Cannot select {sym}")
 
 if not SYMBOLS:
-    print("Không có cặp nào hợp lệ.")
+    print("No valid symbols.")
     quit()
 
-print("Bot Mean Reversion (6 cặp) đã chạy...")
-print("Cập nhật mỗi 15 giây | Chỉ trade 13:00–17:00 (GMT+7) | Algo Trading phải được BẬT")
+print("Mean Reversion Bot (6 symbols) running...")
+print("Update every 15 seconds | Trade only 13:00-17:00 (GMT+7) | Algo Trading must be ON")
 
 try:
     while True:
-        # === LỌC GIỜ GIAO DỊCH ===
-        current_hour = datetime.now().hour  # Múi giờ hệ thống = GMT+7 (nếu bạn ở VN)
+        # === TRADING HOURS FILTER ===
+        current_hour = datetime.now().hour  # System timezone = GMT+7 (if you are in VN)
         if not (13 <= current_hour <= 17):
-            # Vẫn in trạng thái nhưng không trade
+            # Still print status but skip trading
             status_parts = []
             for SYMBOL in SYMBOLS:
                 status_parts.append(f"{SYMBOL}: OFF")
@@ -63,7 +63,7 @@ try:
             time.sleep(15)
             continue
 
-        # === PHASE 1: TRẠNG THÁI GIÁ CÓ TIMESTAMP ===
+        # === PHASE 1: TIMESTAMPED PRICE STATUS ===
         status_parts = []
         symbol_data = {}
 
@@ -83,20 +83,20 @@ try:
 
         print(f"[{datetime.now().strftime('%H:%M:%S')}] " + " | ".join(status_parts))
 
-        # === PHASE 2: PHÂN TÍCH & GỬI LỆNH ===
+        # === PHASE 2: ANALYZE & SEND ORDERS ===
         for SYMBOL in SYMBOLS:
             df = symbol_data[SYMBOL]
             if df is None or len(df) < 50:
                 continue
 
-            # Tính chỉ báo
+            # Calculate indicators
             bb = calculate_bb(df, config["bb_period"], config["bb_std"])
             df['rsi'] = calculate_rsi(df, config["rsi_period"])
             df['adx'] = calculate_adx(df, config["adx_period"])
             df['atr'] = calculate_atr(df, config["atr_period"])
             df = pd.concat([df, bb], axis=1)
 
-            # --- DEBUG: KIỂM TRA ĐIỀU KIỆN CHI TIẾT ---
+            # --- DEBUG: DETAILED CONDITION CHECK ---
             last = df.iloc[-1]
             bb_buy = last['close'] < last['lower']
             bb_sell = last['close'] > last['upper']
@@ -104,14 +104,14 @@ try:
             rsi_sell = last['rsi'] > 70
             adx_ok = last['adx'] < config['adx_threshold']
 
-            # Xác định tín hiệu thủ công (để debug)
+            # Determine signal manually (for debug)
             signal = None
             if bb_buy and rsi_buy and adx_ok:
                 signal = "buy"
             elif bb_sell and rsi_sell and adx_ok:
                 signal = "sell"
 
-            # In debug nếu điều kiện gần đúng
+            # Log when conditions are close
             if not signal:
                 reasons = []
                 if not (bb_buy or bb_sell):
@@ -121,7 +121,7 @@ try:
                 if not adx_ok:
                     reasons.append("ADX")
                 if reasons:
-                    print(f"[DEBUG] {SYMBOL} không trade: {' + '.join(reasons)} | RSI={last['rsi']:.1f}, ADX={last['adx']:.1f}")
+                    print(f"[DEBUG] {SYMBOL} skipped: {' + '.join(reasons)} | RSI={last['rsi']:.1f}, ADX={last['adx']:.1f}")
                 continue
 
             # --- COOLDOWN ---
@@ -130,7 +130,7 @@ try:
                 if (now - LAST_TRADE_TIME[SYMBOL]).total_seconds() < 60:
                     continue
 
-            # --- GỬI LỆNH ---
+            # --- SEND ORDER ---
             price = mt5.symbol_info_tick(SYMBOL).ask if signal == "buy" else mt5.symbol_info_tick(SYMBOL).bid
             atr_val = df['atr'].iloc[-1]
             sl_dist = atr_val * 1.5
@@ -143,13 +143,13 @@ try:
             LAST_TRADE_TIME[SYMBOL] = now
 
             if result.retcode == mt5.TRADE_RETCODE_DONE:
-                print(f"\n[{now.strftime('%Y-%m-%d %H:%M:%S')}] LỆNH KHỚP: {signal.upper()} {SYMBOL} @ {price:.5f}")
+                print(f"\n[{now.strftime('%Y-%m-%d %H:%M:%S')}] FILLED: {signal.upper()} {SYMBOL} @ {price:.5f}")
             else:
-                print(f"\n[{now.strftime('%Y-%m-%d %H:%M:%S')}] LỆNH GỬI NHƯNG CHƯA KHỚP ({result.retcode}): {SYMBOL}")
+                print(f"\n[{now.strftime('%Y-%m-%d %H:%M:%S')}] SENT BUT NOT FILLED ({result.retcode}): {SYMBOL}")
 
         time.sleep(15)
 
 except KeyboardInterrupt:
-    print("\nBot đã dừng.")
+    print("\nBot stopped.")
 finally:
     mt5.shutdown()
