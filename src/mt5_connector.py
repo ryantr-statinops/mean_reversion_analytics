@@ -4,9 +4,9 @@ from datetime import datetime
 
 def initialize_mt5():
     if not mt5.initialize():
-        print("Lỗi khởi tạo MT5")
+        print("MT5 initialization failed")
         return False
-    print("MT5 đã khởi tạo")
+    print("MT5 initialized")
     return True
 
 def get_ohlc_data(symbol, timeframe, n_bars=100):
