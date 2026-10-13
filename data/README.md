@@ -1,6 +1,6 @@
 # Data
 
-Thư mục chứa dữ liệu export và kết quả phân tích. Không commit file CSV/JSON (xem `.gitignore`).
+This folder holds exported data and analysis results. CSV/JSON files are not committed (see `.gitignore`).
 
-- Chạy `python scripts/export_history.py` để tạo `results/trades.csv` (multi-symbol, lọc theo `magic_number`).
-- Mở `notebooks/performance_analysis.ipynb` để xem hiệu suất. Notebook tự bỏ qua khi chưa có file.
+- Run `python scripts/export_history.py` to generate `results/trades.csv` (multi-symbol, filtered by `magic_number`).
+- Open `notebooks/performance_analysis.ipynb` to review performance. The notebook skips gracefully when no file exists yet.
